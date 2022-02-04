@@ -1,0 +1,125 @@
+---
+title: 'Homophily in Voting Behaviour: Evidence from Preferential Voting'
+author: "Štěpán Mikula"
+date: "4 2 2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r, echo=FALSE, message=FALSE}
+library(dtplyr)
+library(tidyverse)
+library(fixest)
+library(modelsummary)
+
+rm(list = ls())
+
+# Read data
+res_obce <- read_tsv("rdata_RP.zip") %>% 
+  mutate(
+    across(
+      .cols = c(maxPORCISLO,OBEC,year),
+      as.character
+    )
+  ) %>% 
+  mutate(
+    across(
+      .cols = c(pref,POC_HLASU),
+      as.integer
+    )
+  ) 
+```
+Variables:
+- `pref`...number of preferential votes for the candidate
+- `homo_municipality`...candidate is resident of the municipality
+- `homo_age`...share of population of the same age
+- `homo_educ`...share of population with the same education (tertiary/other)
+- `homo_gender`...share of population of the same gender
+- `homo_isco`...share of population of the same occupation (ISCO1)
+- `year`...year of elections (elections ID)
+- `ballot`...ballot (electoral list) ID
+- `POC_HLASU`...number of votes casted for the party
+- `total_fe`...candidate ID (elections specific)
+- `OBEC`...municipality ID (CISOB)
+- `maxPORCISLO`...number of candidates on the ballot
+- `small`...municipality with population below median
+
+
+```{r}
+modell <- list(
+  formula(pref ~ homo_educ | total_fe + OBEC  + maxPORCISLO),
+  formula(pref ~ homo_isco | total_fe + OBEC  + maxPORCISLO),
+  formula(pref ~ homo_age | total_fe + OBEC  + maxPORCISLO),
+  formula(pref ~ homo_gender | total_fe + OBEC  + maxPORCISLO),
+  formula(pref ~ homo_municipality | total_fe + OBEC + maxPORCISLO),
+  formula(pref ~ homo_educ + homo_isco + homo_age + homo_gender + homo_municipality | total_fe + OBEC + maxPORCISLO)
+) 
+```
+
+#### Table 3
+
+```{r}
+baseline <- modell %>% 
+  map(
+    feglm,
+    data = res_obce,
+    offset = ~log(POC_HLASU),
+    cluster = c("ballot"),
+    family = quasipoisson
+  )
+
+etable(baseline)
+```
+
+#### Table 4
+
+```{r}
+baseline_small <- modell %>% 
+  map(
+    feglm,
+    data = filter(res_obce,small),
+    offset = ~log(POC_HLASU),
+    cluster = c("ballot"),
+    family = quasipoisson
+  )
+
+etable(baseline_small)
+```
+
+#### Table A.1
+
+```{r}
+dta <- filter(res_obce, small, !homo_municipality)
+
+baseline_small_munic <- modell[-5] %>% 
+  map(
+    feglm,
+    data = dta,
+    offset = ~log(POC_HLASU),
+    cluster = c("ballot"),
+    family = quasipoisson
+  )
+
+etable(baseline_small_munic)
+```
+
+#### Table A.2
+
+```{r}
+rs_small <- filter(res_obce, small)
+
+baseline_small_year_w <- modell %>% 
+  map(
+    feglm,
+    data = rs_small,
+    offset = ~log(POC_HLASU),
+    cluster = c("ballot"),
+    family = quasipoisson,
+    weights = rs_small$POC_HLASU
+  )
+
+etable(baseline_small_year_w)
+```
