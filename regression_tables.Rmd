@@ -2,7 +2,7 @@
 title: 'Homophily in Voting Behaviour: Evidence from Preferential Voting'
 author: "Štěpán Mikula"
 date: "4 2 2022"
-output: html_document
+output: html_notebook
 ---
 
 ```{r setup, include=FALSE}
@@ -67,7 +67,7 @@ baseline <- modell %>%
     feglm,
     data = res_obce,
     offset = ~log(POC_HLASU),
-    cluster = c("ballot"),
+    cluster = c("ballot","OBEC"),
     family = quasipoisson
   )
 
@@ -82,7 +82,7 @@ baseline_small <- modell %>%
     feglm,
     data = filter(res_obce,small),
     offset = ~log(POC_HLASU),
-    cluster = c("ballot"),
+    cluster = c("ballot","OBEC"),
     family = quasipoisson
   )
 
@@ -99,7 +99,7 @@ baseline_small_munic <- modell[-5] %>%
     feglm,
     data = dta,
     offset = ~log(POC_HLASU),
-    cluster = c("ballot"),
+    cluster = c("ballot","OBEC"),
     family = quasipoisson
   )
 
@@ -116,7 +116,7 @@ baseline_small_year_w <- modell %>%
     feglm,
     data = rs_small,
     offset = ~log(POC_HLASU),
-    cluster = c("ballot"),
+    cluster = c("ballot","OBEC"),
     family = quasipoisson,
     weights = rs_small$POC_HLASU
   )
