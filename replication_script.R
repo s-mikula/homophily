@@ -43,7 +43,7 @@ options("modelsummary_format_numeric_latex" = "plain")
 
 time_start <- Sys.time()
 
-# Load data
+# Load data (available from Zenodo repository: DOI number 10.5281/zenodo.7070556)
 load("replication_data_20220910.RData")
 
 # Tables
@@ -572,26 +572,6 @@ print_table <- function(estlist, fname = NULL){
     "homo_municipality:position_cat(50,55]" = "(50,55] x var. of interest",
     "homo_municipality:position_cat(55,60]" = "(55,60] x var. of interest"
   )
-  
-  # if(!is.null(fname)){
-  #   modelsummary(
-  #     estlist,
-  #     stars = TRUE,
-  #     fmt = function(x) format(x, digits = 1, nsmall = 4, scientific = FALSE, big.mark = ","),
-  #     coef_map = vrs,
-  #     gof_omit = "^(?!Num)",
-  #     output = str_c("FIGURES/",fname,".tex")
-  #   )
-  #   
-  #   modelsummary(
-  #     estlist,
-  #     stars = TRUE,
-  #     fmt = function(x) format(x, digits = 1, nsmall = 4, scientific = FALSE, big.mark = ","),
-  #     coef_map = vrs,
-  #     gof_omit = "^(?!Num)",
-  #     output = str_c("FIGURES/",fname,".txt")
-  #   )
-  # }
   
   modelsummary(
     estlist,
