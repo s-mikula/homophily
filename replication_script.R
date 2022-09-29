@@ -65,18 +65,18 @@ load("replication_data_20220910.RData")
 # total_fe...ID of candidate-election pair
 # maxPORCISLO...number of candidates on the ballot
 # cluster_ID...ID for error term clustering
-# POC_HLASU...total number of votes casted for the party in the given municipality
-# small_municipality...indicator variable for municipality with population below median (defined separately 
+# POC_HLASU...total number of votes cast for the party in the given municipality
+# small_municipality...indicator variable for a municipality with a population below the median (defined separately 
 # for each year and constituency)
 # year...election year (election ID)
 # VOLKRAJ...constituency ID
-# PORCISLO...postition of the candidate on the ballot
+# PORCISLO...position of the candidate on the ballot
 # VEK...age
 # agecat...age category
 # MANDAT...indicator variable for elected candidates
 # tertiary_educ...indicator variable for candidates with tertiary education
 # gender...male/female
-# ger_share...indicator variable for municipality being dominated by ethnic Germans in 1930
+# ger_share...indicator variable for a municipality being dominated by ethnic Germans in 1930
 
 
 #### Descriptives ####
